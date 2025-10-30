@@ -16,8 +16,7 @@ public class WebConfig {
                 registry.addMapping("/**")
                         // ✅ Replace this with your actual Vercel frontend URL after deployment
                         .allowedOrigins(
-                                "http://localhost:3000",
-                                "https://your-frontend-name.vercel.app"
+                                "https://birthday-frontend-orpin.vercel.app/"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")

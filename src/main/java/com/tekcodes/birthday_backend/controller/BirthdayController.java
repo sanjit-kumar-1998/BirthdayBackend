@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://192.168.1.36:3000")
+@CrossOrigin(origins = "https://birthday-frontend-orpin.vercel.app/")
 @RequestMapping("/api")
 public class BirthdayController {
 
