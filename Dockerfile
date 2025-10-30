@@ -1,25 +1,24 @@
-# Use an official OpenJDK 21 image
 FROM openjdk:21-jdk-slim AS build
 
-# Set working directory inside the container
 WORKDIR /app
 
-# Copy everything
+# Copy everything into the container
 COPY . .
 
-# Build the Spring Boot JAR
+# ✅ Fix permission issue for mvnw
+RUN chmod +x mvnw
+
+# ✅ Build the Spring Boot JAR file
 RUN ./mvnw clean package -DskipTests
 
-# Second stage: smaller runtime image
+# ---------- Runtime Image ----------
 FROM openjdk:21-jdk-slim
-
 WORKDIR /app
 
-# Copy the built jar from the previous stage
+# Copy only the JAR from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8080 for Render
 EXPOSE 8080
 
-# Run the jar
+# Run the app
 ENTRYPOINT ["java", "-jar", "app.jar"]
