@@ -1,20 +1,25 @@
-# Step 1: Use Java 21 base image
-FROM openjdk:21-jdk-slim
+# Use an official OpenJDK 21 image
+FROM openjdk:21-jdk-slim AS build
 
-# Step 2: Set working directory
+# Set working directory inside the container
 WORKDIR /app
 
-# Step 3: Copy all files
+# Copy everything
 COPY . .
 
-# Step 4: Give permission to mvnw
-RUN chmod +x mvnw
-
-# Step 5: Build the JAR
+# Build the Spring Boot JAR
 RUN ./mvnw clean package -DskipTests
 
-# Step 6: Expose the port your app runs on
+# Second stage: smaller runtime image
+FROM openjdk:21-jdk-slim
+
+WORKDIR /app
+
+# Copy the built jar from the previous stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose port 8080 for Render
 EXPOSE 8080
 
-# Step 7: Run the JAR (⚠️ replace filename below)
-CMD ["java", "-jar", "target/birthday-backend-0.0.1-SNAPSHOT.jar"]
+# Run the jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
