@@ -12,7 +12,7 @@ RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
 # ---------- Runtime Image ----------
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jdk-jammy AS build
 WORKDIR /app
 
 # Copy only the JAR from the build stage
