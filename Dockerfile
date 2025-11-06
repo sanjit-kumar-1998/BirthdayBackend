@@ -1,24 +1,15 @@
-FROM openjdk:21-jdk-slim AS build
-
+# ---------- Build Stage ----------
+FROM eclipse-temurin:21-jdk-jammy AS builder
 WORKDIR /app
-
-# Copy everything into the container
 COPY . .
-
-# ✅ Fix permission issue for mvnw
-RUN chmod +x mvnw
-
-# ✅ Build the Spring Boot JAR file
 RUN ./mvnw clean package -DskipTests
 
-# ---------- Runtime Image ----------
-FROM eclipse-temurin:21-jdk-jammy AS build
+# ---------- Runtime Stage ----------
+FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
 
-# Copy only the JAR from the build stage
-COPY --from=build /app/target/*.jar app.jar
+# Copy JAR from the builder stage
+COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8080
-
-# Run the app
 ENTRYPOINT ["java", "-jar", "app.jar"]
